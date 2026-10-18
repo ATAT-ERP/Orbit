@@ -4,7 +4,7 @@
 
 Orbit es el cliente Android liviano del ERP A.T.A.T. Presenta datos, recoge acciones del usuario, gestiona el estado de cada pantalla y se comunica con los servicios existentes. NexusBack conserva la lógica de negocio, las autorizaciones, las reglas de integridad y la persistencia. Supabase Auth es el proveedor de autenticación; Orbit utilizará la sesión y el JWT para llamar a los endpoints protegidos de NexusBack. El backend debe verificar el token y decidir los permisos: la interfaz no es una barrera de seguridad.
 
-La arquitectura acordada para las funcionalidades nuevas es **MVVM + Repository**. El repositorio contiene por ahora solo una pantalla inicial en Compose; las capas de datos, los ViewModels, StateFlow, la autenticación y la inyección de dependencias descritos aquí son criterios de implementación, no componentes ya presentes. No se introduce inicialmente Clean Architecture estricta, una capa de casos de uso independientes ni modelos de dominio duplicados.
+La arquitectura acordada para las funcionalidades nuevas es **MVVM + Repository**. El repositorio contiene por ahora solo una pantalla inicial en Compose, ubicada en `ui/home` y abierta desde `MainActivity`. Las capas de datos, los ViewModels, StateFlow, la autenticación y la inyección de dependencias descritos aquí son criterios de implementación, no componentes ya presentes. No se introduce inicialmente Clean Architecture estricta, una capa de casos de uso independientes ni modelos de dominio duplicados.
 
 ## Flujo y responsabilidades
 
@@ -23,7 +23,7 @@ Las carpetas indican responsabilidades previstas, no una obligación de crear ar
 
 ## Estado y límites de la lógica
 
-Cada ViewModel expondrá un `StateFlow` de estado de pantalla de solo lectura para la UI y recibirá acciones mediante métodos claros. El estado incluirá solo lo necesario para renderizar, por ejemplo datos, carga y error. Se actualiza desde el ViewModel; Compose lo observa con una API compatible con el ciclo de vida cuando se incorpore la dependencia correspondiente. Evitar varios booleanos que permitan estados contradictorios y no guardar el mismo dato en varias fuentes de estado sin motivo.
+Cada ViewModel expondrá un `StateFlow` de estado de pantalla de solo lectura para la UI y recibirá acciones mediante métodos claros. Cuando una pantalla cargue datos, representará carga, contenido y error como estados excluyentes propios de esa pantalla, con solo la información necesaria para renderizar. El estado se actualiza desde el ViewModel; Compose lo observa con una API compatible con el ciclo de vida cuando se incorpore la dependencia correspondiente. Evitar varios booleanos que permitan estados contradictorios y no guardar el mismo dato en varias fuentes de estado sin motivo.
 
 Orbit puede validar entradas para dar respuesta inmediata, controlar navegación, formato visual y disponibilidad de controles. NexusBack vuelve a validar cada operación, aplica reglas de negocio y permisos, y determina el resultado. No replicar cálculos, decisiones de autorización ni reglas de integridad del ERP en ViewModels o repositorios. Conservar los códigos funcionales `NEX-*` para que la UI pueda mostrar un mensaje apropiado sin perder el código original.
 
