@@ -1,10 +1,16 @@
 package com.example.orbit.dto
 
+import com.example.orbit.auth.AuthRepository
+import com.example.orbit.auth.SupabaseClient
+import io.github.jan.supabase.gotrue.auth
+
 object NetworkModule {
 
     private const val BASE_URL = "http://10.0.2.2:8000/api/"
 
-    private var tokenProvider: () -> String? = { null }
+    private val tokenProvider: () -> String? = {
+        SupabaseClient.client.auth.currentAccessTokenOrNull()
+    }
 
     private val retrofit by lazy {
         NexusBackClient.create(
@@ -20,5 +26,13 @@ object NetworkModule {
 
     val userRepository: UserRepository by lazy {
         UserRepository(userService)
+    }
+
+    val authService: AuthService by lazy {
+        retrofit.create(AuthService::class.java)
+    }
+
+    val authRepository: AuthRepository by lazy {
+        AuthRepository(authService)
     }
 }
