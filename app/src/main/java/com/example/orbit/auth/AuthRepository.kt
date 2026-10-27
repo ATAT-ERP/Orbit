@@ -17,14 +17,12 @@ class AuthRepository(private val authService: AuthService) {
             if (response.isSuccessful) {
                 val body = response.body()
                 if (body != null) {
-                    SupabaseClient.client.auth.importSession(
-                        UserSession(
-                            accessToken = body.accessToken,
-                            refreshToken = body.refreshToken,
-                            expiresIn = body.expiresIn.toLong(),
-                            tokenType = body.tokenType,
-                            user = null
-                        )
+                    // Usamos importAuthToken. El SDK toma los tokens, contacta a Supabase
+                    // para descargar el usuario faltante, y guarda la sesión completa en disco.
+                    SupabaseClient.client.auth.importAuthToken(
+                        accessToken = body.accessToken,
+                        refreshToken = body.refreshToken,
+                        autoRefresh = true
                     )
                     NetworkResult.Success(Unit)
                 } else {
