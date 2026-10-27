@@ -2,5 +2,6 @@
 
 object Routes {
     const val LOGIN = "login"
+    const val COMPANY_SELECTION = "company_selection"
     const val HOME = "home"
 }

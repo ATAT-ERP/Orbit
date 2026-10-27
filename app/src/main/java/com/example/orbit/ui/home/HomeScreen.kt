@@ -14,7 +14,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.orbit.ui.theme.OrbitTheme
 
 @Composable
-fun HomeScreen(onLogout: () -> Unit = {}) {
+fun HomeScreen(
+    onLogout: () -> Unit = {},
+    onChangeCompany: () -> Unit = {}
+) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Column(
             modifier = Modifier
@@ -24,6 +27,9 @@ fun HomeScreen(onLogout: () -> Unit = {}) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(text = "Hello Android!")
+            Button(onClick = onChangeCompany) {
+                Text("Cambiar de empresa")
+            }
             Button(onClick = onLogout) {
                 Text("Cerrar sesión")
             }

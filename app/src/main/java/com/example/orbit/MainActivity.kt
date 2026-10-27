@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.example.orbit.auth.SupabaseClient
+import com.example.orbit.dto.ActiveCompany
 import com.example.orbit.dto.NetworkModule
 import com.example.orbit.ui.navigation.AppNavigation
 import com.example.orbit.ui.navigation.Routes
@@ -38,10 +39,10 @@ class MainActivity : ComponentActivity() {
                         CircularProgressIndicator()
                     }
                 } else {
-                    val startDestination = if (sessionStatus is SessionStatus.Authenticated) {
-                        Routes.HOME
-                    } else {
-                        Routes.LOGIN
+                    val startDestination = when {
+                        sessionStatus !is SessionStatus.Authenticated -> Routes.LOGIN
+                        ActiveCompany.current.value == null -> Routes.COMPANY_SELECTION
+                        else -> Routes.HOME
                     }
                     AppNavigation(
                         navController = navController,
@@ -50,6 +51,7 @@ class MainActivity : ComponentActivity() {
                             coroutineScope.launch {
                                 NetworkModule.authRepository.logout()
                             }
+                            ActiveCompany.clear()
                         }
                     )
                 }
