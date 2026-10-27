@@ -8,6 +8,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.orbit.dto.NetworkModule
+import com.example.orbit.ui.company.CompanySelectionScreen
+import com.example.orbit.ui.company.CompanySelectionViewModel
 import com.example.orbit.ui.home.HomeScreen
 import com.example.orbit.ui.login.LoginScreen
 import com.example.orbit.ui.login.LoginViewModel
@@ -35,8 +37,8 @@ fun AppNavigation(
             LoginScreen(
                 viewModel = loginViewModel,
                 onLoginSuccess = {
-                    // Navegamos a HOME y destruimos LOGIN del historial
-                    navController.navigate(Routes.HOME) {
+                    // Tras loguearse, va a elegir empresa (no directo a Home)
+                    navController.navigate(Routes.COMPANY_SELECTION) {
                         popUpTo(Routes.LOGIN) { inclusive = true }
                     }
                 }
@@ -44,6 +46,31 @@ fun AppNavigation(
         }
 
         // Rutas protegidas
+        composable(Routes.COMPANY_SELECTION) {
+            val companySelectionViewModel: CompanySelectionViewModel = viewModel(
+                factory = object : ViewModelProvider.Factory {
+                    @Suppress("UNCHECKED_CAST")
+                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                        return CompanySelectionViewModel(NetworkModule.companyRepository) as T
+                    }
+                }
+            )
+            CompanySelectionScreen(
+                viewModel = companySelectionViewModel,
+                onCompanySelected = {
+                    navController.navigate(Routes.HOME) {
+                        popUpTo(Routes.COMPANY_SELECTION) { inclusive = true }
+                    }
+                },
+                onLogout = {
+                    onLogout()
+                    navController.navigate(Routes.LOGIN) {
+                        popUpTo(0)
+                    }
+                }
+            )
+        }
+
         composable(Routes.HOME) {
             HomeScreen(
                 onLogout = {
@@ -51,6 +78,12 @@ fun AppNavigation(
                     // Navegamos a LOGIN y limpiamos TODO el historial
                     navController.navigate(Routes.LOGIN) {
                         popUpTo(0)
+                    }
+                },
+                onChangeCompany = {
+                    // Volvemos a elegir empresa, sacando Home del historial
+                    navController.navigate(Routes.COMPANY_SELECTION) {
+                        popUpTo(Routes.HOME) { inclusive = true }
                     }
                 }
             )
