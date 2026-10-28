@@ -25,8 +25,7 @@ import com.example.orbit.dto.CompanyDto
 @Composable
 fun CompanySelectionScreen(
     viewModel: CompanySelectionViewModel,
-    onCompanySelected: () -> Unit,
-    onLogout: () -> Unit
+    onCompanySelected: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -43,13 +42,7 @@ fun CompanySelectionScreen(
                 }
 
                 is CompanySelectionUiState.Empty -> {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("No tenés empresas asignadas todavía.")
-                        // Botón agregado para poder probar con otro usuario. Eliminar despues.
-                        Button(onClick = onLogout) {
-                            Text("Cerrar sesión")
-                        }
-                    }
+                    Text("No tenés empresas asignadas todavía.")
                 }
 
                 is CompanySelectionUiState.Error -> {
