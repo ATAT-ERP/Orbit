@@ -8,6 +8,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.orbit.dto.NetworkModule
+import com.example.orbit.ui.cloud.CloudScreen
+import com.example.orbit.ui.cloud.CloudViewModel
 import com.example.orbit.ui.company.CompanySelectionScreen
 import com.example.orbit.ui.company.CompanySelectionViewModel
 import com.example.orbit.ui.home.HomeScreen
@@ -85,6 +87,10 @@ fun AppNavigation(
                 onOpenProfile = {
                     // Home queda en el historial: Atrás desde el perfil vuelve a Home
                     navController.navigate(Routes.PROFILE)
+                },
+                onOpenCloud = {
+                    // Igual que el perfil: Atrás desde Archivos vuelve a Home
+                    navController.navigate(Routes.CLOUD)
                 }
             )
         }
@@ -99,6 +105,18 @@ fun AppNavigation(
                 }
             )
             ProfileScreen(viewModel = profileViewModel)
+        }
+
+        composable(Routes.CLOUD) {
+            val cloudViewModel: CloudViewModel = viewModel(
+                factory = object : ViewModelProvider.Factory {
+                    @Suppress("UNCHECKED_CAST")
+                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                        return CloudViewModel(NetworkModule.cloudRepository) as T
+                    }
+                }
+            )
+            CloudScreen(viewModel = cloudViewModel)
         }
     }
 }

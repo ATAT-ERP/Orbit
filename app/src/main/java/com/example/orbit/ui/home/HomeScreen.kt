@@ -17,7 +17,8 @@ import com.example.orbit.ui.theme.OrbitTheme
 fun HomeScreen(
     onLogout: () -> Unit = {},
     onChangeCompany: () -> Unit = {},
-    onOpenProfile: () -> Unit = {}
+    onOpenProfile: () -> Unit = {},
+    onOpenCloud: () -> Unit = {}
 ) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Column(
@@ -30,6 +31,9 @@ fun HomeScreen(
             Text(text = "Hello Android!")
             Button(onClick = onOpenProfile) {
                 Text("Mi perfil")
+            }
+            Button(onClick = onOpenCloud) {
+                Text("Archivos")
             }
             Button(onClick = onChangeCompany) {
                 Text("Cambiar de empresa")
