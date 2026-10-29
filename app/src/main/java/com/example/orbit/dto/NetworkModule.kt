@@ -43,4 +43,12 @@ object NetworkModule {
     val companyRepository: CompanyRepository by lazy {
         CompanyRepository(companyService)
     }
+
+    private val cloudService: CloudService by lazy {
+        retrofit.create(CloudService::class.java)
+    }
+
+    val cloudRepository: CloudRepository by lazy {
+        CloudRepository(cloudService)
+    }
 }
